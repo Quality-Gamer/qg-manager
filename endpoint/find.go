@@ -57,7 +57,7 @@ func findManagerMatch(userId, week int, managerId string) (model.ManagerMatch, b
 	manager.ProjectId, _ = strconv.Atoi(database.GetKey(conf.GetKeyOccurrence(manager.UserId,manager.Id) + ":" + conf.ProjectId))
 	manager.Progress, _ = strconv.ParseFloat(database.GetKey(keyMatch+":"+conf.Progress), 64)
 	manager.Team.Tester, _ = strconv.Atoi(database.GetKey(keyMatch + ":" + conf.Team + ":" + conf.Tester))
-	manager.Team.RiskAnalyst, _ = strconv.Atoi(database.GetKey(keyMatch + ":" + conf.Team + ":" + conf.RiskAnalyst))
+	manager.Team.RiskAnalyst, _ = strconv.Atoi(database.GetKey(keyMatch + ":" + conf.Team + ":" + conf.RequirementAnalyst))
 	manager.Team.ProductOwner, _ = strconv.Atoi(database.GetKey(keyMatch + ":" + conf.Team + ":" + conf.ProductOwner))
 	manager.Team.Designer, _ = strconv.Atoi(database.GetKey(keyMatch + ":" + conf.Team + ":" + conf.Designer))
 	manager.Team.Frontend, _ = strconv.Atoi(database.GetKey(keyMatch + ":" + conf.Team + ":" + conf.Frontend))

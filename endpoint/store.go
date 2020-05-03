@@ -26,7 +26,7 @@ func loadAllItems() map[string]int{
 	items[conf.Frontend] = conf.PriceFrontend
 	items[conf.Backend] = conf.PriceBackend
 	items[conf.Designer] = conf.PriceDesigner
-	items[conf.RiskAnalyst] = conf.PriceRiskAnalyst
+	items[conf.RequirementAnalyst] = conf.PriceRiskAnalyst
 	items[conf.ProductOwner] = conf.PriceProductOwner
 	items[conf.Ide] = conf.PriceIde
 	items[conf.DesignSoftware] = conf.PriceDesignSoftware

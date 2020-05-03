@@ -97,7 +97,7 @@ func isTeam(item string) bool {
 	team[conf.Frontend] = 1
 	team[conf.Designer] = 1
 	team[conf.ProductOwner] = 1
-	team[conf.RiskAnalyst] = 1
+	team[conf.RequirementAnalyst] = 1
 	team[conf.Tester] = 1
 
 	if _, ok := team[item]; ok {

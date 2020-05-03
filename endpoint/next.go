@@ -92,6 +92,11 @@ func generateNextWeek(userId,week int, managerId string) (model.ManagerMatch,boo
 		database.SetKey(keyMatch + ":" + conf.UserOccurrence + ":" +  strconv.Itoa(value.Occurrence.Id) + ":" + conf.Status,value.Status)
 	}
 
+	progress, progressStatus := model.GameLogic(new)
+
+	new.Progress = progress
+	new.ProgressStatus = progressStatus
+
 	nextWeekSaveManagerMatch(new)
 
 	return new,false
@@ -164,7 +169,7 @@ func nextWeekSaveManagerMatch(new model.ManagerMatch) {
 	database.SetKey(keyProjectId,new.ProjectId)
 	database.SetKey(keyProgress,new.Progress)
 	database.SetKey(keyMatch + ":" + conf.Team + ":" + conf.Tester,new.Team.Tester)
-	database.SetKey(keyMatch + ":" + conf.Team + ":" + conf.RiskAnalyst,new.Team.RiskAnalyst)
+	database.SetKey(keyMatch + ":" + conf.Team + ":" + conf.RequirementAnalyst,new.Team.RiskAnalyst)
 	database.SetKey(keyMatch + ":" + conf.Team + ":" + conf.ProductOwner,new.Team.ProductOwner)
 	database.SetKey(keyMatch + ":" + conf.Team + ":" + conf.Backend,new.Team.Backend)
 	database.SetKey(keyMatch + ":" + conf.Team + ":" + conf.Frontend,new.Team.Frontend)
