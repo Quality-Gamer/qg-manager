@@ -52,7 +52,7 @@ func generateNextWeek(userId,week int, managerId string) (model.ManagerMatch,boo
 	var new model.ManagerMatch
 	old := loadOldWeek(userId,week,managerId)
 
-	if week == 8 {
+	if week > 8 {
 		return old,true
 	}
 

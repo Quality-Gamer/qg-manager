@@ -13,7 +13,7 @@ type ManagerMatch struct {
 	ChallengeId    int                 `json:"challenge_id"`
 	UserId         int                 `json:"user_id"`
 	ProjectId      int                 `json:"project_id"`
-	Week           int                 `json:"weak"`
+	Week           int                 `json:"week"`
 	Progress       float64             `json:"progress"`
 	ProgressStatus string			   `json:"progress_status"`
 	Money          int                 `json:"money"`
@@ -59,12 +59,12 @@ func GameLogic(manager ManagerMatch) (float64,string){
 	thisWeekPerc := initialPerc * conf.TotalWeek
 
 	progress := saveWeekPerc(manager,thisWeekPerc)
-	status := getProgressStatus(manager,progress)
+	status := GetProgressStatus(manager,progress)
 
 	return progress,status
 }
 
-func getProgressStatus(manager ManagerMatch,progress float64) string{
+func GetProgressStatus(manager ManagerMatch,progress float64) string{
 	min := float64(manager.Week) * conf.MinGoalWeek
 	max := float64(manager.Week) * conf.MaxGoalWeek
 

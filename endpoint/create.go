@@ -46,6 +46,7 @@ func createManagerMatch(userId,challengeId,projectId int) model.ManagerMatch{
 	new.Money = conf.WeekMoney
 	new.Time = conf.WeekTime
 	new.ChallengeId = challengeId
+	new.ProgressStatus = "N"
 
 	keyMatch := conf.GetKeyManager(new.UserId,new.Week,new.Id)
 	keyProgress := keyMatch + ":" + conf.Progress

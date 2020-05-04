@@ -71,11 +71,12 @@ func findManagerMatch(userId, week int, managerId string) (model.ManagerMatch, b
 	manager.Event.Status = database.GetKey(keyMatch + ":" + conf.Event + ":" + conf.Status)
 	manager.Event.Name = database.GetKey(keyMatch + ":" + conf.Event + ":" + conf.Name)
 
+
 	oldMoney, _ := strconv.Atoi(database.GetKey(conf.GetKeyOccurrence(manager.UserId,manager.Id) + ":" + conf.CurrentMoney))
 	oldTime, _ := strconv.Atoi(database.GetKey(conf.GetKeyOccurrence(manager.UserId,manager.Id) + ":" + conf.CurrentTime))
 
-	manager.Money = oldMoney + conf.WeekMoney
-	manager.Time = oldTime + conf.WeekTime
+	manager.Money = oldMoney
+	manager.Time = oldTime
 
 	keyOccurrences := conf.GetKeyOccurrence(userId,managerId)
 	numberOfOccurrences,_ := strconv.Atoi(database.GetKey(keyOccurrences + ":" + conf.Occurrence + ":" + conf.NumberOccurrences))
@@ -112,6 +113,12 @@ func findManagerMatch(userId, week int, managerId string) (model.ManagerMatch, b
 	}
 
 	currentWeek, _ := strconv.Atoi(database.GetKey(conf.GetKeyOccurrence(manager.UserId,manager.Id) + ":" + conf.CurrentWeek))
+
+	manager.ProgressStatus = model.GetProgressStatus(manager,manager.Progress)
+
+	if manager.Week == 1 {
+		manager.ProgressStatus = "N"
+	}
 
 	if manager.ProjectId == 0 || manager.Week > currentWeek {
 		return manager, true
