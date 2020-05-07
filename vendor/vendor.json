@@ -42,12 +42,6 @@
 			"revisionTime": "2018-11-12T18:52:42Z"
 		},
 		{
-			"checksumSHA1": "WfZYSJypENRB7hffvtV16tmDZX0=",
-			"path": "manager",
-			"revision": "09beb3d152b6887552e7dcba8b9647771b337317",
-			"revisionTime": "2020-05-04T01:59:04Z"
-		},
-		{
 			"checksumSHA1": "VUKD3BTjlO4Ddx4MBiDq/4F6bB4=",
 			"path": "net/http",
 			"revision": ""
