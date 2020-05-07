@@ -24,6 +24,12 @@
 			"revisionTime": "2019-06-11T08:46:15Z"
 		},
 		{
+			"checksumSHA1": "WDcVWDtHun6YjZ5ImyORwp2qGxY=",
+			"path": "github.com/ghodss/yaml",
+			"revision": "25d852aebe32c875e9c044af3eef9c7dc6bc777f",
+			"revisionTime": "2019-02-12T21:16:48Z"
+		},
+		{
 			"checksumSHA1": "qabkY+fWcUEXEzfGNmw8mD3vGZ0=",
 			"path": "github.com/go-redis/redis",
 			"revision": "c9f2e839d2ca1fce7d989d29e31f452b35b19804",
