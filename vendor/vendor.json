@@ -1,0 +1,57 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "HuT/PQRww2aNo9E3IWaMJ2aw9vs=",
+			"path": "crypto/sha1",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "X/vyME4ijlR8K0vwqITls0en5rM=",
+			"path": "encoding/hex",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "OU615nnx8J37+fIwOLal6q/dFZ0=",
+			"path": "encoding/json",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "PYXuf7wvcj492uWhjvmXlyyQUYc=",
+			"path": "github.com/cheekybits/genny/generic",
+			"revision": "df3d48aa411e8e28498e452e42cc1e40498a9e58",
+			"revisionTime": "2019-06-11T08:46:15Z"
+		},
+		{
+			"checksumSHA1": "qabkY+fWcUEXEzfGNmw8mD3vGZ0=",
+			"path": "github.com/go-redis/redis",
+			"revision": "c9f2e839d2ca1fce7d989d29e31f452b35b19804",
+			"revisionTime": "2020-04-18T06:05:16Z"
+		},
+		{
+			"checksumSHA1": "ZV9hQmT1ejCv2vo1iPPHvffkuW0=",
+			"path": "github.com/labstack/echo",
+			"revision": "fc4b1c0a830f194bf6334d2b3e61d92cccebb2be",
+			"revisionTime": "2020-03-05T14:36:43Z"
+		},
+		{
+			"checksumSHA1": "Nl8u5pNlN3FyZ/ieMgodi/+vp38=",
+			"path": "github.com/tkanos/gonfig",
+			"revision": "896f3d81fadfe082262467a1c22fd43278806a02",
+			"revisionTime": "2018-11-12T18:52:42Z"
+		},
+		{
+			"checksumSHA1": "WfZYSJypENRB7hffvtV16tmDZX0=",
+			"path": "manager",
+			"revision": "09beb3d152b6887552e7dcba8b9647771b337317",
+			"revisionTime": "2020-05-04T01:59:04Z"
+		},
+		{
+			"checksumSHA1": "VUKD3BTjlO4Ddx4MBiDq/4F6bB4=",
+			"path": "net/http",
+			"revision": ""
+		}
+	],
+	"rootPath": "manager"
+}
