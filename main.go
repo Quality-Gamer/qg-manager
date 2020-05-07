@@ -5,6 +5,7 @@ import (
 	"github.com/tkanos/gonfig"
 	"manager/conf"
 	"manager/endpoint"
+	"os"
 )
 
 var configuration = conf.Configuration{}
@@ -36,5 +37,5 @@ func main() {
 	//Next
 	e.GET("/api/next", endpoint.Next)
 
-	e.Logger.Fatal(e.Start(":" + configuration.Server.Port))
+	e.Logger.Fatal(e.Start(":" + os.Getenv("PORT")))
 }

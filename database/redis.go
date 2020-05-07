@@ -3,11 +3,12 @@ package database
 import (
 	"github.com/cheekybits/genny/generic"
 	"github.com/go-redis/redis"
+	"os"
 )
 
 var client = redis.NewClient(&redis.Options{
-	Addr:     "localhost:6379",
-	Password: "", // no password set
+	Addr:     os.Getenv("REDIS_ADDR"),
+	Password: os.Getenv("REDIS_PASS"), // no password set
 	DB:       0,  // use default DB
 })
 
