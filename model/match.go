@@ -1,8 +1,8 @@
 package model
 
 import (
-	"manager/conf"
-	"manager/database"
+	"github.com/Quality-Gamer/qg-manager/conf"
+	"github.com/Quality-Gamer/qg-manager/database"
 	"math"
 	"strconv"
 	"strings"

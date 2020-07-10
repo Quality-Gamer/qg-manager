@@ -3,8 +3,8 @@ package endpoint
 import (
 	"encoding/json"
 	"github.com/labstack/echo"
-	"manager/conf"
-	"manager/model"
+	"github.com/Quality-Gamer/qg-manager/conf"
+	"github.com/Quality-Gamer/qg-manager/model"
 	"net/http"
 )
 

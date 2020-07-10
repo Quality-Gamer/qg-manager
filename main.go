@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/labstack/echo"
 	"github.com/tkanos/gonfig"
-	"manager/conf"
-	"manager/endpoint"
+	"github.com/Quality-Gamer/qg-manager/conf"
+	"github.com/Quality-Gamer/qg-manager/endpoint"
 	"os"
 )
 
