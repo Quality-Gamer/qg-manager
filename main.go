@@ -21,19 +21,19 @@ func main() {
 	e := echo.New()
 
 	//Create
-	e.GET("/api/create", endpoint.Create)
+	e.POST("/api/create", endpoint.Create)
 
 	//Find
-	e.GET("/api/find", endpoint.Find)
+	e.POST("/api/find", endpoint.Find)
 
 	//Store
-	e.GET("/api/store", endpoint.Store)
+	e.POST("/api/store", endpoint.Store)
 
 	//Transaction
-	e.GET("/api/transaction", endpoint.Transaction)
+	e.POST("/api/transaction", endpoint.Transaction)
 
 	//Next
-	e.GET("/api/next", endpoint.Next)
+	e.POST("/api/next", endpoint.Next)
 
 	e.Logger.Fatal(e.Start(":" + os.Getenv("PORT")))
 }
