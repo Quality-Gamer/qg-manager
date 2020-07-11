@@ -1,22 +1,21 @@
 package main
 
 import (
-	"github.com/labstack/echo"
-	"github.com/tkanos/gonfig"
 	"github.com/Quality-Gamer/qg-manager/conf"
 	"github.com/Quality-Gamer/qg-manager/endpoint"
+	"github.com/labstack/echo"
 	"os"
 )
 
 var configuration = conf.Configuration{}
 
-func init() {
-	err := gonfig.GetConf("./conf/conf.json", &configuration)
-
-	if err != nil {
-		panic(err)
-	}
-}
+//func init() {
+//	err := gonfig.GetConf("./conf/conf.json", &configuration)
+//
+//	if err != nil {
+//		panic(err)
+//	}
+//}
 
 //main contains all API endpoints
 func main() {
