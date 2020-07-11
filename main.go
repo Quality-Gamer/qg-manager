@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/Quality-Gamer/qg-manager/endpoint"
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 	"os"
 )
 
@@ -19,6 +20,11 @@ import (
 //main contains all API endpoints
 func main() {
 	e := echo.New()
+
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		//AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+	}))
 
 	//Create
 	e.GET("/api/create", endpoint.Create)

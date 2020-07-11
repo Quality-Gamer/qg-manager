@@ -22,6 +22,14 @@
   revision = "df3d48aa411e8e28498e452e42cc1e40498a9e58"
 
 [[projects]]
+  digest = "1:76dc72490af7174349349838f2fe118996381b31ea83243812a97e5a0fd5ed55"
+  name = "github.com/dgrijalva/jwt-go"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "06ea1031745cb8b3dab3f6a236daf2b0aa468b7e"
+  version = "v3.2.0"
+
+[[projects]]
   digest = "1:b46f222214baaffab9a1f9620134e0b8fed44e5a6ad5e028fbd21f45d89095b6"
   name = "github.com/go-redis/redis"
   packages = [
@@ -38,18 +46,24 @@
   version = "v6.15.8"
 
 [[projects]]
-  digest = "1:7d0c0fa46fda27acca82e5e2f39414c2dc5bfc7cabe7ce66142b538844deb26a"
+  digest = "1:efd601ad1d1189884f37ed075fadb5bbd17f1f5acf5862827247c6da56d125ba"
   name = "github.com/labstack/echo"
-  packages = ["."]
+  packages = [
+    ".",
+    "middleware",
+  ]
   pruneopts = "UT"
-  revision = "fc4b1c0a830f194bf6334d2b3e61d92cccebb2be"
+  revision = "38772c686c76b501f94bd6cd5b77f5842e93b559"
+  version = "v3.3.10"
 
 [[projects]]
-  digest = "1:9bc108827ac1d8783dea294f1ef07732fa4ca7d6e20518c04888a85828eba4ce"
+  digest = "1:e8e65826d60fd82637fb9df06ecd651191b599f4a8f72b86362012f288778320"
   name = "github.com/labstack/gommon"
   packages = [
+    "bytes",
     "color",
     "log",
+    "random",
   ]
   pruneopts = "UT"
   revision = "4919956f6fb227b548f004da27c7c6b20fba499f"
@@ -70,14 +84,6 @@
   pruneopts = "UT"
   revision = "7b513a986450394f7bbf1476909911b3aa3a55ce"
   version = "v0.0.12"
-
-[[projects]]
-  digest = "1:dc48dff981a895912c33cf272b1d869c216d058bd4025736cb481d3ceeed6872"
-  name = "github.com/tkanos/gonfig"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "e83209aed2d171bab5ffb312a1e630110481cb99"
-  version = "1.0"
 
 [[projects]]
   digest = "1:c468422f334a6b46a19448ad59aaffdfc0a36b08fdcc1c749a0b29b6453d7e59"
@@ -108,15 +114,9 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:3bf4361d92528e4b1e2fc451e2037adb56795b4184414f2d341dfed58fbe2003"
+  digest = "1:d1f7edf951b9cc444358a31de2f4e4c1c5c539ea9c6aca13f5bf92eb1124fc4b"
   name = "golang.org/x/net"
-  packages = [
-    "http/httpguts",
-    "http2",
-    "http2/h2c",
-    "http2/hpack",
-    "idna",
-  ]
+  packages = ["idna"]
   pruneopts = "UT"
   revision = "ab34263943818b32f575efc978a3d24e80b04bd7"
 
@@ -167,7 +167,7 @@
     "github.com/cheekybits/genny/generic",
     "github.com/go-redis/redis",
     "github.com/labstack/echo",
-    "github.com/tkanos/gonfig",
+    "github.com/labstack/echo/middleware",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
