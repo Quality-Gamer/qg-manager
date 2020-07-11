@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-var configuration = conf.Configuration{}
+//var configuration = conf.Configuration{}
 
 //func init() {
 //	err := gonfig.GetConf("./conf/conf.json", &configuration)
