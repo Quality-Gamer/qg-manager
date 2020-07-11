@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/Quality-Gamer/qg-manager/conf"
 	"github.com/Quality-Gamer/qg-manager/endpoint"
 	"github.com/labstack/echo"
 	"os"
