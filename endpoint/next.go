@@ -18,9 +18,9 @@ func Next(c echo.Context) error {
 	c.Response().Header().Set("Access-Control-Allow-Origin", "*")
 	c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
 
-	if len(c.FormValue("user_id")) > 0 && len(c.FormValue("manager_id")) > 0 {
+	if len(c.FormValue("user_id")) > 0 && len(c.FormValue("match_id")) > 0 {
 		userId, _ := strconv.Atoi(c.FormValue("user_id"))
-		managerId := c.FormValue("manager_id")
+		managerId := c.FormValue("match_id")
 		week, _ := strconv.Atoi(database.GetKey(conf.GetKeyOccurrence(userId,managerId) + ":" + conf.CurrentWeek))
 		week += 1
 		match,end := generateNextWeek(userId,week,managerId)

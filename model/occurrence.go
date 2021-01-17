@@ -1,18 +1,21 @@
 package model
 
 type Occurrence struct {
-	Id          int    `json:"occurrence_id"`
-	Description string `json:"description"`
+	Id               int               `json:"occurrence_id"`
+	Description      string            `json:"description"`
+	SolveOccurrences []SolveOccurrence `json:"solve"`
 }
 
 type ManagerOccurrence struct {
-	Occurrence   Occurrence `json:"occurrence"`
-	Status string     `json:"status"`
+	Id         string     `json:"id"`
+	Occurrence Occurrence `json:"occurrence"`
+	Status     string     `json:"status"`
 }
 
 type UserOccurrence struct {
-	Occurrence   Occurrence `json:"occurrence"`
-	Status string     `json:"status"`
+	Id         string     `json:"id"`
+	Occurrence Occurrence `json:"occurrence"`
+	Status     string     `json:"status"`
 }
 
 func LoadOccurrenceList() []Occurrence {
