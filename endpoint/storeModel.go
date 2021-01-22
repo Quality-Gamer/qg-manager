@@ -19,12 +19,14 @@ type normalizedResponse struct {
 func StoreModel(c echo.Context) error {
 	var res model.Response
 
-	if len(c.FormValue("week")) > 0 && len(c.FormValue("model_id")) > 0 {
+	if len(c.FormValue("user_id")) > 0 && len(c.FormValue("week")) > 0 && len(c.FormValue("match_id")) > 0 {
 		c.Response().Header().Set("Access-Control-Allow-Origin", "*")
 		c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
 		week, _ := strconv.Atoi(c.FormValue("week"))
-		modelId := c.FormValue("model_id")
-		items := loadModelItems(modelId,week)
+		user_id, _ := strconv.Atoi(c.FormValue("user_id"))
+		matchId := c.FormValue("match_id")
+		modelId := model.GetModelId(user_id,matchId)
+		items := loadModelItems(modelId,matchId,user_id,week)
 		res.Response = append(res.Response, items)
 		res.Message = conf.SuccessMessage
 		res.Status = conf.SuccessCode
@@ -38,11 +40,12 @@ func StoreModel(c echo.Context) error {
 	}
 }
 
-func loadModelItems(modelId string, week int) []*normalizedResponse{
+func loadModelItems(modelId,matchId string, userId,week int) []*normalizedResponse{
 	var items []*normalizedResponse
-	model := model.GetModel(modelId)
-	levels := model.Levels
-	index := week - 1
+	_model := model.GetModel(modelId)
+	levels := _model.Levels
+	//index := week - 1
+	index := model.GetCurrentLevel(userId,week,matchId)
 	p := levels[index].Process
 
 	for _, i := range p {

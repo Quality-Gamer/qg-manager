@@ -3,7 +3,7 @@ package main
 import (
 	//"github.com/Quality-Gamer/qg-manager/endpoint"
 	"github.com/labstack/echo"
-	"os"
+	"qg-manager/endpoint"
 )
 
 //var configuration = conf.Configuration{}
@@ -45,6 +45,9 @@ func main() {
 
 	//Get/Store
 	e.GET("/api/get/store", endpoint.StoreModel)
+
+	//Create/Transaction
+	e.POST("/api/create/transaction", endpoint.TransactionModel)
 
 	//Debug
 	e.POST("/api/debug", endpoint.Debug)

@@ -51,6 +51,10 @@ const BelongsTo = "bt"
 const Time = "tm"
 const Price = "pr"
 const Quantity = "qt"
+const Count = "ct"
+const ResourcesIds = "rr"
+const ActivityIds = "aa"
+const Member = "mb"
 
 func GetKeyManager(userId,week int, managerId string) string {
 	return Game + ":" + Manager + ":" + strconv.Itoa(userId) + ":" + managerId + ":" + strconv.Itoa(week)
@@ -81,12 +85,12 @@ func GetLevelProcessKey(id string,level,process int) string {
 	return GetGameModelKey(id,Level) + ":" + strconv.Itoa(level) + ":" + Process  + ":" + strconv.Itoa(process)
 }
 
-func GetActivityKey(id,field string,level,process,unit int) string {
-	return GetLevelProcessKey(id,level,process) + ":" + Activity + ":" + strconv.Itoa(unit) + ":" + field
+func GetActivityKey(id,field string,level,process int,unit string) string {
+	return GetLevelProcessKey(id,level,process) + ":" + Activity + ":" + unit + ":" + field
 }
 
-func GetResourceKey(id,field string,level,process,unit int) string {
-	return GetLevelProcessKey(id,level,process) + ":" + Resource + ":" + strconv.Itoa(unit) + ":" + field
+func GetResourceKey(id,field string,level,process int,unit string) string {
+	return GetLevelProcessKey(id,level,process) + ":" + Resource + ":" + unit + ":" + field
 }
 
 func GetGameOccurrenceKey(id,field string) string {
@@ -100,6 +104,3 @@ func GetSolveKey(id,field string) string {
 func GetScoreKey(id,field string) string {
 	return GetGameModelKey(id,Score) + ":" + field
 }
-
-
-

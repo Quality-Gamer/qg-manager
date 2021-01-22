@@ -30,3 +30,19 @@ func GetKey(key string) string {
 	}
 	return val
 }
+
+func HSetKey(key,field string,value generic.Type){
+	_ = client.HSetNX(key,field,value)
+}
+
+func HSetIncrKey(key,field string){
+	_ = client.HIncrBy(key,field,1)
+}
+
+func HGetKey(key,field string) string {
+	return client.HGet(key,field).Val()
+}
+
+func IncrValue(key string) {
+	_ = client.Incr(key)
+}

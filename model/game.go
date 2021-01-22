@@ -20,7 +20,7 @@ type ManagerMatch struct {
 	Progress       float64             `json:"progress"`
 	ProgressStatus string              `json:"progress_status"`
 	Level          int                 `json:"level"`
-	Money          float64                 `json:"money"`
+	Money          float64             `json:"money"`
 	Time           int                 `json:"time"`
 	Team           Team                `json:"team"`
 	Resources      MatchResource       `json:"resources"`
@@ -90,10 +90,68 @@ func NewMatch(modelId string,userId int) *ManagerMatch {
 	return match
 }
 
+func FindManagerMatch(userId, week int, matchId string) ManagerMatch {
+	var match ManagerMatch
+	//keyMatch := conf.GetKeyManager(userId,week,matchId)
+	//keyLevel := keyMatch + ":" + conf.Level
+	keyNoWeek := conf.GetKeyOccurrence(userId,matchId)
+	keyGameModelId := keyNoWeek + ":" + conf.Model
+	//keyOccurrence := keyNoWeek + ":" + conf.Occurrence
+	keyCurrentWeek :=  keyNoWeek + ":" + conf.CurrentWeek
+	keyCurrentMoney :=  keyNoWeek + ":" + conf.CurrentMoney
+	keyCurrentTime :=  keyNoWeek + ":" + conf.CurrentTime
+	keyCurrentLevel :=  keyNoWeek + ":" + conf.Level
+
+	match.Id = database.GetKey(conf.GetGameModelKey(matchId, conf.Identifier))
+	match.GameModel = GetGameModel(database.GetKey(keyGameModelId))
+	match.Week,_ = strconv.Atoi(database.GetKey(keyCurrentWeek))
+	match.Money,_ = strconv.ParseFloat(database.GetKey(keyCurrentMoney),64)
+	match.Time,_ = strconv.Atoi(database.GetKey(keyCurrentTime))
+	match.Level,_ = strconv.Atoi(database.GetKey(keyCurrentLevel))
+
+	//var t Team
+
+
+	//Team           Team                `json:"team"`
+	//Resources      MatchResource       `json:"resources"`
+	//License        License             `json:"license"`
+	//Action         Action              `json:"action"`
+	//Activities     []MatchActivity     `json:"match_activities"`
+	//Event          Event               `json:"event"`
+	//Occurrence     []ManagerOccurrence `json:"manager_occurrence"`
+	//UserOccurrence []UserOccurrence    `json:"user_occurrence"`
+
+	return match
+}
+
 func GetModel(modelId string) GameModel {
 	game := GetGameModel(modelId)
 	return game
 }
+
+func GetModelId(user_id int, matchId string) string {
+	key := conf.GetKeyOccurrence(user_id,matchId) + ":" + conf.Model
+	return database.GetKey(key)
+}
+
+func GetCurrentLevel(user_id, week int, matchId string) int {
+	key := conf.GetKeyManager(user_id,week,matchId) + ":" + conf.Level
+	lv,_ := strconv.Atoi(database.GetKey(key))
+	return lv
+}
+
+func GetCurrentTime(user_id int, matchId string) int {
+	key := conf.GetKeyOccurrence(user_id,matchId) + ":" + conf.CurrentTime
+	tm,_ := strconv.Atoi(database.GetKey(key))
+	return tm
+}
+
+func GetCurrentMoney(user_id int, matchId string) float64 {
+	key := conf.GetKeyOccurrence(user_id,matchId) + ":" + conf.CurrentMoney
+	mn,_ := strconv.ParseFloat(database.GetKey(key),64)
+	return mn
+}
+
 
 func createMatch(m *ManagerMatch) {
 	keyMatch := conf.GetKeyManager(m.UserId,m.Week,m.Id)
@@ -104,6 +162,7 @@ func createMatch(m *ManagerMatch) {
 	keyCurrentWeek :=  keyNoWeek + ":" + conf.CurrentWeek
 	keyCurrentMoney :=  keyNoWeek + ":" + conf.CurrentMoney
 	keyCurrentTime :=  keyNoWeek + ":" + conf.CurrentTime
+	keyCurrentLevel :=  keyNoWeek + ":" + conf.Level
 
 	database.SetKey(keyGameModelId,m.GameModel.Id)
 	database.SetKey(keyOccurrence,0)
@@ -111,6 +170,7 @@ func createMatch(m *ManagerMatch) {
 	database.SetKey(keyCurrentMoney,m.Money)
 	database.SetKey(keyCurrentTime,m.Time)
 	database.SetKey(keyLevel,m.Level)
+	database.SetKey(keyCurrentLevel,m.Level)
 }
 
 func GerenateHash(userId int) string{
@@ -120,6 +180,12 @@ func GerenateHash(userId int) string{
 	return hex.EncodeToString(hash.Sum(nil))
 }
 
+func GerenateHashByString(hashId string) string{
+	string := time.Now().String()+ hashId
+	hash := sha1.New()
+	hash.Write([]byte(string))
+	return hex.EncodeToString(hash.Sum(nil))
+}
 
 //Deprecated: There is another better function to do it
 func getFirstLayerAttr(modelId string) (string,string,string,int,float64,string,int) {
@@ -134,6 +200,20 @@ func getFirstLayerAttr(modelId string) (string,string,string,int,float64,string,
 	float_im, _ := strconv.ParseFloat(im,64)
 	int_bt, _ := strconv.Atoi(bt)
 	return id,name,desc,int_it,float_im,tp,int_bt
+}
+
+func AddResource(userId int, matchId, itemId string) {
+	keyNoWeek := conf.GetKeyOccurrence(userId,matchId)
+	keyTeam := keyNoWeek + ":" + conf.Team
+	keyMember := keyTeam + ":" + conf.Member
+	database.HSetIncrKey(keyMember,itemId)
+}
+
+
+func AddActivity(userId int, matchId, itemId string) {
+	keyNoWeek := conf.GetKeyOccurrence(userId,matchId)
+	keyAc := keyNoWeek + ":" + conf.Activity
+	database.HSetIncrKey(keyAc,itemId)
 }
 
 func (mm *ManagerMatch) RunGame() bool {

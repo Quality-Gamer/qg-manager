@@ -117,17 +117,16 @@ func GetLevels(id string) []Level {
 
 		lv.Id = database.GetKey(conf.GetLevelKey(id,keyId,i))
 		lv.Level = database.GetKey(conf.GetLevelKey(id,keyLevel,i))
-		lv.Process = GetProcess(id,i + 1)
+		lv.Process = GetProcess(id,i)
 		list = append(list,lv)
-
 	}
-	
+
 	return list
 }
 
 func GetProcess(id string, level int) []Process {
 	var list []Process
-	max := 3
+	max := 1
 
 	for i := 0; i < max ; i++ {
 		keyId := conf.Identifier
@@ -150,7 +149,8 @@ func GetProcess(id string, level int) []Process {
 
 func GetActivities(id string, level,process int) []Activity {
 	var list []Activity
-	max := 3
+	baseKey := conf.GetProcessKey(id, conf.Activity, level,process)
+	max, _ := strconv.Atoi(database.GetKey(baseKey + ":" + conf.Count))
 
 	for i := 0; i < max ; i++ {
 		keyId := conf.Identifier
@@ -159,12 +159,14 @@ func GetActivities(id string, level,process int) []Activity {
 		keyQuantity := conf.Quantity
 		keyTime := conf.Time
 
+		hashIndex := database.HGetKey(baseKey + ":" + conf.ActivityIds,strconv.Itoa(i))
+
 		var ac Activity
-		ac.Name = database.GetKey(conf.GetActivityKey(id,keyName,level,process,i))
-		ac.Id = database.GetKey(conf.GetActivityKey(id,keyId,level,process,i))
-		sc,_ := strconv.Atoi(database.GetKey(conf.GetActivityKey(id,keyScore,level,process,i)))
-		qt,_ := strconv.Atoi(database.GetKey(conf.GetActivityKey(id,keyQuantity,level,process,i)))
-		tm,_ := strconv.Atoi(database.GetKey(conf.GetActivityKey(id,keyTime,level,process,i)))
+		ac.Name = database.GetKey(conf.GetActivityKey(id,keyName,level,process,hashIndex))
+		ac.Id = database.GetKey(conf.GetActivityKey(id,keyId,level,process,hashIndex))
+		sc,_ := strconv.Atoi(database.GetKey(conf.GetActivityKey(id,keyScore,level,process,hashIndex)))
+		qt,_ := strconv.Atoi(database.GetKey(conf.GetActivityKey(id,keyQuantity,level,process,hashIndex)))
+		tm,_ := strconv.Atoi(database.GetKey(conf.GetActivityKey(id,keyTime,level,process,hashIndex)))
 		ac.Score = sc
 		ac.Quantity = qt
 		ac.Time = tm
@@ -176,7 +178,8 @@ func GetActivities(id string, level,process int) []Activity {
 
 func GetResources(id string, level,process int) []Resource {
 	var list []Resource
-	max := 5
+	baseKey := conf.GetProcessKey(id, conf.Resource, level,process)
+	max, _ := strconv.Atoi(database.GetKey(baseKey + ":" + conf.Count))
 
 	for i := 0; i < max ; i++ {
 		keyId :=  conf.Identifier
@@ -186,16 +189,18 @@ func GetResources(id string, level,process int) []Resource {
 		keyPrice :=  conf.Price
 		keyType :=  conf.Type
 
+		hashIndex := database.HGetKey(baseKey + ":" + conf.ResourcesIds,strconv.Itoa(i))
+
 		var rc Resource
-		rc.Name = database.GetKey(conf.GetResourceKey(id,keyName,level,process,i))
-		rc.Id = database.GetKey(conf.GetResourceKey(id,keyId,level,process,i))
-		sc,_ := strconv.Atoi(database.GetKey(conf.GetResourceKey(id,keyScore,level,process,i)))
-		qt,_ := strconv.Atoi(database.GetKey(conf.GetResourceKey(id,keyQuantity,level,process,i)))
-		pr,_ := strconv.Atoi(database.GetKey(conf.GetResourceKey(id,keyPrice,level,process,i)))
+		rc.Name = database.GetKey(conf.GetResourceKey(id,keyName,level,process,hashIndex))
+		rc.Id = database.GetKey(conf.GetResourceKey(id,keyId,level,process,hashIndex))
+		sc,_ := strconv.Atoi(database.GetKey(conf.GetResourceKey(id,keyScore,level,process,hashIndex)))
+		qt,_ := strconv.Atoi(database.GetKey(conf.GetResourceKey(id,keyQuantity,level,process,hashIndex)))
+		pr,_ := strconv.Atoi(database.GetKey(conf.GetResourceKey(id,keyPrice,level,process,hashIndex)))
 		rc.Score = sc
 		rc.Quantity = qt
 		rc.Price = pr
-		rc.Type = database.GetKey(conf.GetResourceKey(id,keyType,level,process,i))
+		rc.Type = database.GetKey(conf.GetResourceKey(id,keyType,level,process,hashIndex))
 
 		list = append(list,rc)
 	}
@@ -221,15 +226,25 @@ func CreateProcess(gm GameModel, pc Process, level,process int) {
 	//TODO: save all struct array
 
 	for key, value := range pc.Activities {
-		k := conf.Activity + ":" + strconv.Itoa(key)
-		database.SetKey(conf.GetProcessKey(gm.Id, k,level,process), value.Id)
-		CreateActivity(gm, value, level, process,key)
+		hashId := strconv.Itoa(level) + gm.Id + conf.Activity
+		value.Id = GerenateHashByString(hashId)
+		//k := conf.Activity + ":" + value.Id
+		//baseKey := conf.GetProcessKey(gm.Id, k, level,process)
+		aKey := conf.GetProcessKey(gm.Id, conf.Activity, level,process)
+		database.IncrValue(aKey + ":" + conf.Count)
+		database.HSetKey(aKey + ":" + conf.ActivityIds, strconv.Itoa(key), value.Id)
+		CreateActivity(gm, value, level, process,value.Id)
 	}
 
 	for key, value := range pc.Resources {
-		k := conf.Resource + ":" + strconv.Itoa(key)
-		database.SetKey(conf.GetProcessKey(gm.Id, k, level,process), value.Id)
-		CreateResource(gm, value, level, process,key)
+		hashId := strconv.Itoa(level) + gm.Id + conf.Resource
+		value.Id = GerenateHashByString(hashId)
+		//k := conf.Resource + ":" + value.Id
+		//baseKey := conf.GetProcessKey(gm.Id, k, level,process)
+		rKey := conf.GetProcessKey(gm.Id, conf.Resource, level,process)
+		database.IncrValue(rKey + ":" + conf.Count)
+		database.HSetKey(rKey + ":" + conf.ResourcesIds, strconv.Itoa(key),value.Id)
+		CreateResource(gm, value, level, process,value.Id)
 	}
 
 	CreateScore(gm, pc.Score)
@@ -241,17 +256,16 @@ func CreateScore(gm GameModel, sc int) {
 	//TODO: save all struct array
 }
 
-func CreateActivity(gm GameModel, at Activity, level,process,unit int) {
+func CreateActivity(gm GameModel, at Activity, level,process int , unit string) {
 	database.SetKey(conf.GetActivityKey(gm.Id, conf.Identifier,level,process,unit), at.Id)
 	database.SetKey(conf.GetActivityKey(gm.Id, conf.Name,level,process,unit), at.Name)
 	database.SetKey(conf.GetActivityKey(gm.Id, conf.Time,level,process,unit), at.Time)
 	database.SetKey(conf.GetActivityKey(gm.Id, conf.Quantity,level,process,unit), at.Quantity)
 	//TODO: save all struct array
-
 	CreateScore(gm, at.Score)
 }
 
-func CreateResource(gm GameModel, rc Resource, level,process,unit int) {
+func CreateResource(gm GameModel, rc Resource, level,process int , unit string) {
 	database.SetKey(conf.GetResourceKey(gm.Id, conf.Identifier,level,process,unit), rc.Id)
 	database.SetKey(conf.GetResourceKey(gm.Id, conf.Name,level,process,unit), rc.Name)
 	database.SetKey(conf.GetResourceKey(gm.Id, conf.Price,level,process,unit), rc.Price)
