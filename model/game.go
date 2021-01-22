@@ -7,6 +7,7 @@ import (
 	"qg-manager/conf"
 	"qg-manager/database"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -130,9 +131,9 @@ func FindManagerMatch(userId int, matchId string) (ManagerMatch,bool) {
 
 func GetMatchActivities(userId, level int, matchId string) []Activity {
 	keyNoWeek := conf.GetKeyOccurrence(userId,matchId)
-	key := keyNoWeek + ":" + conf.Team + ":" + conf.Member
+	key := keyNoWeek + ":" + conf.Activity
 	modelId := GetModelId(userId,matchId)
-	keyCount := conf.GetLevelKey(modelId, conf.Level,level) + ":" + conf.Process
+	keyCount := conf.GetLevelKey(modelId, conf.Process,level)
 	nProcess, _ := strconv.Atoi(database.GetKey(keyCount))
 	var activities []Activity
 
@@ -161,7 +162,7 @@ func GetMatchResources(userId, level int, matchId string) (Team,[]Product) {
 	keyNoWeek := conf.GetKeyOccurrence(userId,matchId)
 	key := keyNoWeek + ":" + conf.Team + ":" + conf.Member
 	modelId := GetModelId(userId,matchId)
-	keyCount := conf.GetLevelKey(modelId, conf.Level,level) + ":" + conf.Process
+	keyCount := conf.GetLevelKey(modelId, conf.Process,level)
 	nProcess, _ := strconv.Atoi(database.GetKey(keyCount))
 	var resources []Resource
 
@@ -306,13 +307,13 @@ func (mm *ManagerMatch) RunGame() bool {
 
 		for _, j := range value.Resources {
 			for _, v := range mm.Resources.Team.Members {
-				if v.Id == j.Id && v.Quantity >= j.Quantity {
+				if strings.Compare(v.Id,j.Id) == 0 && v.Quantity >= j.Quantity {
 					scoreResourcesTeam += j.Score
 				}
 			}
 
 			for _, v := range mm.Resources.Products {
-				if v.Id == j.Id && v.Quantity >= j.Quantity {
+				if strings.Compare(v.Id,j.Id) == 0 && v.Quantity >= j.Quantity {
 					scoreResourcesProduct += j.Score
 				}
 			}
@@ -320,12 +321,12 @@ func (mm *ManagerMatch) RunGame() bool {
 
 		for _, j := range value.Activities {
 			for _, v := range mm.Activities {
-				if v.Id == j.Id && v.Quantity >= j.Quantity {
+				if strings.Compare(v.Id,j.Id) == 0 && v.Quantity >= j.Quantity {
 					scoreActivities += j.Score
 				}
 			}
 		}
-
+	
 		if scoreActivities+scoreResourcesProduct+scoreResourcesTeam >= value.Score {
 			solveProcess += 1
 		}

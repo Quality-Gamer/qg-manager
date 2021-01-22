@@ -264,6 +264,7 @@ func CreateActivity(gm GameModel, at Activity, level,process int , unit string) 
 	database.SetKey(conf.GetActivityKey(gm.Id, conf.Name,level,process,unit), at.Name)
 	database.SetKey(conf.GetActivityKey(gm.Id, conf.Time,level,process,unit), at.Time)
 	database.SetKey(conf.GetActivityKey(gm.Id, conf.Quantity,level,process,unit), at.Quantity)
+	database.SetKey(conf.GetActivityKey(gm.Id, conf.Score,level,process,unit), at.Score)
 	//TODO: save all struct array
 	CreateScore(gm, at.Score)
 }
@@ -274,6 +275,7 @@ func CreateResource(gm GameModel, rc Resource, level,process int , unit string) 
 	database.SetKey(conf.GetResourceKey(gm.Id, conf.Price,level,process,unit), rc.Price)
 	database.SetKey(conf.GetResourceKey(gm.Id, conf.Type,level,process,unit), rc.Type)
 	database.SetKey(conf.GetResourceKey(gm.Id, conf.Quantity,level,process,unit), rc.Quantity)
+	database.SetKey(conf.GetResourceKey(gm.Id, conf.Score,level,process,unit), rc.Score)
 	//TODO: save all struct array
 	CreateScore(gm, rc.Score)
 }
