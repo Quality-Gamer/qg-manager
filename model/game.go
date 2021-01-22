@@ -10,23 +10,26 @@ import (
 	"time"
 )
 
+const TeamType = "T"
+const ProductType = "P"
+
 type ManagerMatch struct {
 	Id             string              `json:"id"`
-	ChallengeId    int                 `json:"challenge_id"`
-	GameModel      GameModel           `json:"model"`
+	ChallengeId    int                 `json:"-"`
+	GameModel      GameModel           `json:"-"`
 	UserId         int                 `json:"user_id"`
-	ProjectId      int                 `json:"project_id"`
+	ProjectId      int                 `json:"-"`
 	Week           int                 `json:"week"`
-	Progress       float64             `json:"progress"`
-	ProgressStatus string              `json:"progress_status"`
+	Progress       float64             `json:"-"`
+	ProgressStatus string              `json:"-"`
 	Level          int                 `json:"level"`
 	Money          float64             `json:"money"`
 	Time           int                 `json:"time"`
-	Team           Team                `json:"team"`
+	Team           Team                `json:"-"`
 	Resources      MatchResource       `json:"resources"`
-	License        License             `json:"license"`
-	Action         Action              `json:"action"`
-	Activities     []MatchActivity     `json:"match_activities"`
+	License        License             `json:"-"`
+	Action         Action              `json:"-"`
+	Activities     []MatchActivity     `json:"activities"`
 	Event          Event               `json:"event"`
 	Occurrence     []ManagerOccurrence `json:"manager_occurrence"`
 	UserOccurrence []UserOccurrence    `json:"user_occurrence"`
@@ -90,7 +93,7 @@ func NewMatch(modelId string,userId int) *ManagerMatch {
 	return match
 }
 
-func FindManagerMatch(userId, week int, matchId string) ManagerMatch {
+func FindManagerMatch(userId, week int, matchId string) (ManagerMatch,bool) {
 	var match ManagerMatch
 	//keyMatch := conf.GetKeyManager(userId,week,matchId)
 	//keyLevel := keyMatch + ":" + conf.Level
@@ -102,26 +105,83 @@ func FindManagerMatch(userId, week int, matchId string) ManagerMatch {
 	keyCurrentTime :=  keyNoWeek + ":" + conf.CurrentTime
 	keyCurrentLevel :=  keyNoWeek + ":" + conf.Level
 
-	match.Id = database.GetKey(conf.GetGameModelKey(matchId, conf.Identifier))
+	match.Id = matchId
+	var exists bool
+	exists = false
+
+	//GameModel is not returned in the response
 	match.GameModel = GetGameModel(database.GetKey(keyGameModelId))
+	if len(match.GameModel.Id) > 0 { exists = true }
+
+	match.UserId = userId
 	match.Week,_ = strconv.Atoi(database.GetKey(keyCurrentWeek))
 	match.Money,_ = strconv.ParseFloat(database.GetKey(keyCurrentMoney),64)
 	match.Time,_ = strconv.Atoi(database.GetKey(keyCurrentTime))
 	match.Level,_ = strconv.Atoi(database.GetKey(keyCurrentLevel))
+	match.Resources.Team, match.Resources.Products = GetMatchResources(userId,match.Level,matchId)
+	match.Activities = GetMatchActivities(userId,match.Level,matchId)
 
-	//var t Team
-
-
-	//Team           Team                `json:"team"`
-	//Resources      MatchResource       `json:"resources"`
-	//License        License             `json:"license"`
-	//Action         Action              `json:"action"`
-	//Activities     []MatchActivity     `json:"match_activities"`
 	//Event          Event               `json:"event"`
 	//Occurrence     []ManagerOccurrence `json:"manager_occurrence"`
 	//UserOccurrence []UserOccurrence    `json:"user_occurrence"`
 
-	return match
+	return match,exists
+}
+
+func GetMatchActivities(userId, level int, matchId string) []MatchActivity {
+	keyNoWeek := conf.GetKeyOccurrence(userId,matchId)
+	key := keyNoWeek + ":" + conf.Team + ":" + conf.Member
+	modelId := GetModelId(userId,matchId)
+	processDefault := 0 // There is only one process in v1.0
+	activities := GetActivities(modelId,level,processDefault)
+	var act []MatchActivity
+
+	for _, activity := range activities {
+		count, _ := strconv.Atoi(database.HGetKey(key,activity.Id))
+		if count > 0 {
+			var m MatchActivity
+			m.Id = activity.Id
+			m.Name = activity.Name
+			m.Quantity = count
+			act = append(act,m)
+		}
+	}
+
+	return act
+}
+
+func GetMatchResources(userId, level int, matchId string) (Team,[]Product) {
+	keyNoWeek := conf.GetKeyOccurrence(userId,matchId)
+	key := keyNoWeek + ":" + conf.Team + ":" + conf.Member
+	modelId := GetModelId(userId,matchId)
+	processDefault := 0 // There is only one process in v1.0
+	resources := GetResources(modelId,level,processDefault)
+	var team Team
+	var products []Product
+
+	for _, resource := range resources {
+		if resource.Type == TeamType {
+			count, _ := strconv.Atoi(database.HGetKey(key,resource.Id))
+			if count > 0 {
+				var m Member
+				m.Id = resource.Id
+				m.Name = resource.Name
+				m.Quantity = count
+				team.Members = append(team.Members,m)
+			}
+		} else if resource.Type == ProductType {
+			count, _ := strconv.Atoi(database.HGetKey(key,resource.Id))
+			if count > 0 {
+				var p Product
+				p.Id = resource.Id
+				p.Name = resource.Name
+				p.Quantity = count
+				products = append(products,p)
+			}
+		}
+	}
+
+	return team,products
 }
 
 func GetModel(modelId string) GameModel {

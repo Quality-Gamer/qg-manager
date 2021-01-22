@@ -55,6 +55,7 @@ const Count = "ct"
 const ResourcesIds = "rr"
 const ActivityIds = "aa"
 const Member = "mb"
+const Product = "pd"
 
 func GetKeyManager(userId,week int, managerId string) string {
 	return Game + ":" + Manager + ":" + strconv.Itoa(userId) + ":" + managerId + ":" + strconv.Itoa(week)

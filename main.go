@@ -49,9 +49,12 @@ func main() {
 	//Create/Transaction
 	e.POST("/api/create/transaction", endpoint.TransactionModel)
 
+	//Get/Match
+	e.GET("/api/get/match", endpoint.FindMatch)
+
 	//Debug
 	e.POST("/api/debug", endpoint.Debug)
 	e.GET("/api/debug", endpoint.Debug)
 
-	e.Logger.Fatal(e.Start(":" + os.Getenv("PORT")))
+	e.Logger.Fatal(e.Start(":61506" ))
 }
