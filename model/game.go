@@ -29,7 +29,7 @@ type ManagerMatch struct {
 	Resources      MatchResource       `json:"resources"`
 	License        License             `json:"-"`
 	Action         Action              `json:"-"`
-	Activities     []MatchActivity     `json:"activities"`
+	Activities     []Activity     `json:"activities"`
 	Event          Event               `json:"event"`
 	Occurrence     []ManagerOccurrence `json:"manager_occurrence"`
 	UserOccurrence []UserOccurrence    `json:"user_occurrence"`
@@ -93,7 +93,7 @@ func NewMatch(modelId string,userId int) *ManagerMatch {
 	return match
 }
 
-func FindManagerMatch(userId, week int, matchId string) (ManagerMatch,bool) {
+func FindManagerMatch(userId int, matchId string) (ManagerMatch,bool) {
 	var match ManagerMatch
 	//keyMatch := conf.GetKeyManager(userId,week,matchId)
 	//keyLevel := keyMatch + ":" + conf.Level
@@ -128,18 +128,25 @@ func FindManagerMatch(userId, week int, matchId string) (ManagerMatch,bool) {
 	return match,exists
 }
 
-func GetMatchActivities(userId, level int, matchId string) []MatchActivity {
+func GetMatchActivities(userId, level int, matchId string) []Activity {
 	keyNoWeek := conf.GetKeyOccurrence(userId,matchId)
 	key := keyNoWeek + ":" + conf.Team + ":" + conf.Member
 	modelId := GetModelId(userId,matchId)
-	processDefault := 0 // There is only one process in v1.0
-	activities := GetActivities(modelId,level,processDefault)
-	var act []MatchActivity
+	keyCount := conf.GetLevelKey(modelId, conf.Level,level) + ":" + conf.Process
+	nProcess, _ := strconv.Atoi(database.GetKey(keyCount))
+	var activities []Activity
+
+	for i := 0; i < nProcess; i++ {
+		a := GetActivities(modelId,level,i)
+		activities = append(activities,a...)
+	}
+
+	var act []Activity
 
 	for _, activity := range activities {
 		count, _ := strconv.Atoi(database.HGetKey(key,activity.Id))
 		if count > 0 {
-			var m MatchActivity
+			var m Activity
 			m.Id = activity.Id
 			m.Name = activity.Name
 			m.Quantity = count
@@ -154,8 +161,15 @@ func GetMatchResources(userId, level int, matchId string) (Team,[]Product) {
 	keyNoWeek := conf.GetKeyOccurrence(userId,matchId)
 	key := keyNoWeek + ":" + conf.Team + ":" + conf.Member
 	modelId := GetModelId(userId,matchId)
-	processDefault := 0 // There is only one process in v1.0
-	resources := GetResources(modelId,level,processDefault)
+	keyCount := conf.GetLevelKey(modelId, conf.Level,level) + ":" + conf.Process
+	nProcess, _ := strconv.Atoi(database.GetKey(keyCount))
+	var resources []Resource
+
+	for i := 0; i < nProcess; i++ {
+		r := GetResources(modelId,level,i)
+		resources = append(resources,r...)
+	}
+
 	var team Team
 	var products []Product
 
@@ -277,9 +291,10 @@ func AddActivity(userId int, matchId, itemId string) {
 }
 
 func (mm *ManagerMatch) RunGame() bool {
-	level := mm.Level - 1
-	level = int(math.Min(float64(level), 7))
+	level := mm.Level
 	levelModel := mm.GameModel.Levels[level]
+	levelMax := len(mm.GameModel.Levels)
+	level = int(math.Min(float64(level), float64(levelMax)))
 
 	solveProcess := 0
 	nProcess := len(levelModel.Process)

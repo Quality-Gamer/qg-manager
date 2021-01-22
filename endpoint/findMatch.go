@@ -5,7 +5,6 @@ import (
 	"github.com/labstack/echo"
 	"net/http"
 	"qg-manager/conf"
-	"qg-manager/database"
 	"qg-manager/model"
 	"strconv"
 )
@@ -18,15 +17,8 @@ func FindMatch(c echo.Context) error {
 	if len(c.FormValue("user_id")) > 0 && len(c.FormValue("match_id")) > 0 {
 		userId, _ := strconv.Atoi(c.FormValue("user_id"))
 		matchId := c.FormValue("match_id")
-		var week int
 
-		if len(c.FormValue("week")) > 0 {
-			week, _ = strconv.Atoi(c.FormValue("week"))
-		} else {
-			week, _ = strconv.Atoi(database.GetKey(conf.GetKeyOccurrence(userId,matchId) + ":" + conf.CurrentWeek))
-		}
-
-		match, err := findMatchById(userId, week, matchId)
+		match, err := findMatchById(userId, matchId)
 		res.Message = conf.SuccessMessage
 		res.Status = conf.SuccessCode
 		res.Response = append(res.Response, match)
@@ -47,8 +39,8 @@ func FindMatch(c echo.Context) error {
 	}
 }
 
-func findMatchById(userId, week int, matchId string) (model.ManagerMatch, bool) {
-	match,exists := model.FindManagerMatch(userId,week,matchId)
+func findMatchById(userId int, matchId string) (model.ManagerMatch, bool) {
+	match,exists := model.FindManagerMatch(userId,matchId)
 
 	if exists {
 		return match,false

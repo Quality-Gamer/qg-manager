@@ -126,7 +126,8 @@ func GetLevels(id string) []Level {
 
 func GetProcess(id string, level int) []Process {
 	var list []Process
-	max := 1
+	keyCount := conf.GetLevelKey(id, conf.Process,level)
+	max, _ := strconv.Atoi(database.GetKey(keyCount))
 
 	for i := 0; i < max ; i++ {
 		keyId := conf.Identifier
@@ -217,6 +218,7 @@ func CreateLevel(gm GameModel, lv Level, level int) {
 		k := strconv.Itoa(key)
 		database.SetKey(conf.GetProcessKey(gm.Id, k,level,key), value.Id)
 		CreateProcess(gm, value, level,key)
+		database.IncrValue(conf.GetLevelKey(gm.Id, conf.Process,level))
 	}
 }
 

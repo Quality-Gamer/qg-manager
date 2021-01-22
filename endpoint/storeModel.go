@@ -2,11 +2,12 @@ package endpoint
 
 import (
 	"encoding/json"
-	"qg-manager/conf"
-	"qg-manager/model"
 	"github.com/labstack/echo"
 	"net/http"
+	"qg-manager/conf"
+	"qg-manager/model"
 	"strconv"
+	"strings"
 )
 
 type normalizedResponse struct {
@@ -71,7 +72,27 @@ func loadModelItems(modelId,matchId string, userId,week int) []*normalizedRespon
 		}
 	}
 
-	return items
+	var addedItems []string
+	var noRepeatedItems []*normalizedResponse
+
+	for _,i := range items {
+		if !has(addedItems,i.Name) {
+			noRepeatedItems = append(noRepeatedItems,i)
+			addedItems = append(addedItems,i.Name)
+		}
+	}
+
+	return noRepeatedItems
+}
+
+func has(slice []string, value string) bool {
+	for _,i := range slice {
+		if strings.Compare(i,value) == 0 {
+			return true
+		}
+	}
+
+	return false
 }
 
 

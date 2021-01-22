@@ -46,3 +46,8 @@ func HGetKey(key,field string) string {
 func IncrValue(key string) {
 	_ = client.Incr(key)
 }
+
+func CountKeys (key string) int {
+	keys := client.Keys(key).Val()
+	return len(keys)
+}
