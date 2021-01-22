@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"github.com/cheekybits/genny/generic"
 	"github.com/labstack/echo"
-	"qg-manager/conf"
-	"qg-manager/model"
-	"qg-manager/database"
 	"net/http"
+	"qg-manager/conf"
+	"qg-manager/database"
+	"qg-manager/model"
 	"strconv"
 )
 
@@ -100,16 +100,25 @@ func getItem(userId,week int, modelId, item, _type string) (string,string,string
 
 	lv := model.GetCurrentLevel(userId, week, modelId)
 	strLv := strconv.Itoa(lv)
-	index := "0"
+	gm := model.GetModel(modelId)
+	indexMax := len(gm.Levels)
 
-	key := conf.Game + ":" + conf.Manager + ":" + conf.Model + ":" + modelId + ":" + conf.Level + ":" + strLv + ":" + conf.Process + ":" + index + ":" + tp + ":" + item + ":"
-	keyName := key + conf.Name
-	keyPrice := key + price
-	keyId := key + conf.Identifier
+	for i := 0; i < indexMax; i++ {
+		key := conf.Game + ":" + conf.Manager + ":" + conf.Model + ":" + modelId + ":" + conf.Level + ":" + strLv + ":" + conf.Process + ":" + strconv.Itoa(i) + ":" + tp + ":" + item + ":"
+		keyName := key + conf.Name
+		keyPrice := key + price
+		keyId := key + conf.Identifier
 
-	nm := database.GetKey(keyName)
-	pc := database.GetKey(keyPrice)
-	id := database.GetKey(keyId)
+		nm := database.GetKey(keyName)
+		pc := database.GetKey(keyPrice)
+		id := database.GetKey(keyId)
 
-	return id,nm,pc
+		intPc,_ := strconv.Atoi(pc)
+		if intPc > 0 {
+			return id,nm,pc
+		}
+	}
+
+
+	return "","",""
 }

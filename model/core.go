@@ -225,6 +225,7 @@ func CreateLevel(gm GameModel, lv Level, level int) {
 func CreateProcess(gm GameModel, pc Process, level,process int) {
 	database.SetKey(conf.GetProcessKey(gm.Id, conf.Identifier,level,process), pc.Id)
 	database.SetKey(conf.GetProcessKey(gm.Id, conf.Name,level,process), pc.Name)
+	database.SetKey(conf.GetProcessKey(gm.Id, conf.Score,level,process), pc.Score)
 	//TODO: save all struct array
 
 	for key, value := range pc.Activities {
