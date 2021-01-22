@@ -21,20 +21,20 @@ import (
 func main() {
 	e := echo.New()
 
-	//Create
-	e.GET("/api/create", endpoint.Create)
-
-	//Find
-	e.GET("/api/find", endpoint.Find)
-
-	//Store
-	e.GET("/api/store", endpoint.Store)
-
-	//Transaction
-	e.GET("/api/transaction", endpoint.Transaction)
-
-	//Next
-	e.GET("/api/next", endpoint.Next)
+	////Create
+	//e.GET("/api/create", endpoint.Create)
+	//
+	////Find
+	//e.GET("/api/find", endpoint.Find)
+	//
+	////Store
+	//e.GET("/api/store", endpoint.Store)
+	//
+	////Transaction
+	//e.GET("/api/transaction", endpoint.Transaction)
+	//
+	////Next
+	//e.GET("/api/next", endpoint.Next)
 
 	//Below there are new endpoints with the new business rules
 
