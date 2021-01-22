@@ -3,6 +3,7 @@ package main
 import (
 	//"github.com/Quality-Gamer/qg-manager/endpoint"
 	"github.com/labstack/echo"
+	"os"
 	"qg-manager/endpoint"
 )
 
@@ -56,5 +57,5 @@ func main() {
 	e.POST("/api/debug", endpoint.Debug)
 	e.GET("/api/debug", endpoint.Debug)
 
-	e.Logger.Fatal(e.Start(":61506" ))
+	e.Logger.Fatal(e.Start(":" + os.Getenv("PORT")))
 }
