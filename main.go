@@ -53,6 +53,9 @@ func main() {
 	//Get/Match
 	e.GET("/api/get/match", endpoint.FindMatch)
 
+	//Run/Game
+	e.POST("/api/run/game", endpoint.GoNext)
+
 	//Debug
 	e.POST("/api/debug", endpoint.Debug)
 	e.GET("/api/debug", endpoint.Debug)
