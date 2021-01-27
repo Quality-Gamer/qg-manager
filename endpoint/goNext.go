@@ -2,39 +2,67 @@ package endpoint
 
 import (
 	"encoding/json"
-	"fmt"
+	"github.com/cheekybits/genny/generic"
+	"github.com/labstack/echo"
+	"net/http"
 	"qg-manager/conf"
 	"qg-manager/database"
 	"qg-manager/model"
-	"github.com/labstack/echo"
-	"net/http"
 	"strconv"
 )
 
+type ResponseNext struct {
+	Status   string   `json:"status"`
+	DataNext DataNext `json:"response"`
+	Message  string   `json:"message"`
+}
+
+type DataNext struct {
+	End   int            `json:"end"`
+	Next  int            `json:"next"`
+	Match []generic.Type `json:"match"`
+}
+
 func GoNext(c echo.Context) error {
-	var res model.Response
+	var res ResponseNext
 	c.Response().Header().Set("Access-Control-Allow-Origin", "*")
 	c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
 
 	if len(c.FormValue("user_id")) > 0 && len(c.FormValue("match_id")) > 0 {
 		userId, _ := strconv.Atoi(c.FormValue("user_id"))
 		managerId := c.FormValue("match_id")
-		week, _ := strconv.Atoi(database.GetKey(conf.GetKeyOccurrence(userId,managerId) + ":" + conf.CurrentWeek))
+		week, _ := strconv.Atoi(database.GetKey(conf.GetKeyOccurrence(userId, managerId) + ":" + conf.CurrentWeek))
 		week += 1
-		match,end := goToNext(userId,week,managerId)
+		match, next, end, err := goToNext(userId, week, managerId)
+
 		res.Status = conf.SuccessCode
 		res.Message = conf.SuccessMessage
-		res.Response = append(res.Response,match)
+		var response []generic.Type
+		response = append(response, match)
 
-		endGame := make(map[string]int)
+		endGame := 0
+		nextGame := 0
 
 		if end {
-			endGame["end"] = 1
+			endGame = 1
 		} else {
-			endGame["end"] = 0
+			endGame= 0
 		}
 
-		res.Response = append(res.Response, endGame)
+		if next {
+			nextGame = 1
+		} else {
+			nextGame = 0
+		}
+
+		if err {
+			res.Status = conf.SuccessCode
+			res.Message = conf.ErrorDoesNotExist
+		}
+
+		res.DataNext.End = endGame
+		res.DataNext.Next = nextGame
+		res.DataNext.Match = response
 
 		c.Response().WriteHeader(http.StatusOK)
 		return json.NewEncoder(c.Response()).Encode(res)
@@ -46,14 +74,29 @@ func GoNext(c echo.Context) error {
 	}
 }
 
-func goToNext(userId,week int, managerId string) (model.ManagerMatch,bool) {
-	m, exists := model.FindManagerMatch(userId,managerId)
+func goToNext(userId, week int, matchId string) (model.ManagerMatch, bool, bool, bool) {
+	m, exists := model.FindManagerMatch(userId, matchId)
 
-	if week > 8 || !exists {
-		return model.ManagerMatch{},true
+	if week > 8 {
+		return m, false, true, false
 	}
 
-	fmt.Println(m.RunGame())
+	if !exists {
+		return model.ManagerMatch{}, false, true, true
+	}
 
-	return m,false
+	success := m.RunGame()
+	newMatch, _ := model.FindManagerMatch(userId, matchId)
+
+	end := false
+
+	if newMatch.Week >= 8 {
+		end = true
+	}
+
+	if success {
+		return newMatch, true, false, end
+	}
+
+	return newMatch, false, false, end
 }

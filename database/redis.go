@@ -51,3 +51,7 @@ func CountKeys (key string) int {
 	keys := client.Keys(key).Val()
 	return len(keys)
 }
+
+func HGetAllKey(key string) map[string]string {
+	return client.HGetAll(key).Val()
+}

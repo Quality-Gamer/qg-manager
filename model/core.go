@@ -1,6 +1,7 @@
 package model
 
 import (
+	"math/rand"
 	"qg-manager/conf"
 	"qg-manager/database"
 	"strconv"
@@ -103,8 +104,156 @@ func GetGameModel(id string) GameModel {
 	//TODO: save all struct array
 
 	gm.Levels = GetLevels(id)
+	gm.UserOccurrences,gm.ManagerOccurrences = GetOcurrences(gm)
 
 	return gm
+}
+
+func CreateOcurrences(gm GameModel) {
+	keyNoIndex := conf.GetGameOccurrenceKey(gm.Id,conf.Count)
+	for k, value := range gm.UserOccurrences {
+		key := conf.GetGameOccurrenceKeyType(gm.Id,conf.UserOccurrence,strconv.Itoa(k))
+		hashString := strconv.Itoa(rand.Int()) + gm.Id + conf.UserOccurrence
+		hashId := GerenateHashByString(hashString)
+		database.SetKey(key + ":" + conf.Identifier,hashId)
+		database.SetKey(key + ":" + conf.Level,value.Level)
+
+		hashString2 := strconv.Itoa(rand.Int()) + gm.Id + conf.Occurrence
+		hashId2 := GerenateHashByString(hashString2)
+		database.SetKey(key + ":" + conf.Occurrence + ":" + conf.Identifier ,hashId2)
+		database.SetKey(key + ":" + conf.Occurrence + ":" + conf.Description ,value.Occurrence.Description)
+
+		database.IncrValue(keyNoIndex + ":" + conf.UserOccurrence)
+
+		for _,i := range value.Occurrence.SolveOccurrences {
+			for z,j := range i.Activities {
+				database.HSetKey(key + ":" + conf.Occurrence + ":" + conf.Solve + ":" + conf.Activity,strconv.Itoa(z),j.Id)
+			}
+		}
+
+		for _,i := range value.Occurrence.SolveOccurrences {
+			for z,j := range i.Activities {
+				database.HSetKey(key + ":" + conf.Occurrence + ":" + conf.Solve + ":" + conf.Resource,strconv.Itoa(z),j.Id)
+			}
+		}
+	}
+
+	for k, value := range gm.ManagerOccurrences {
+		key := conf.GetGameOccurrenceKeyType(gm.Id,conf.ManagerOccurrence,strconv.Itoa(k))
+		hashString := strconv.Itoa(rand.Int()) + gm.Id + conf.ManagerOccurrence
+		hashId := GerenateHashByString(hashString)
+		database.SetKey(key + ":" + conf.Identifier,hashId)
+
+
+		hashString2 := strconv.Itoa(rand.Int()) + gm.Id + conf.Occurrence
+		hashId2 := GerenateHashByString(hashString2)
+		database.SetKey(key + ":" + conf.Occurrence + ":" + conf.Identifier ,hashId2)
+		database.SetKey(key + ":" + conf.Occurrence + ":" + conf.Description ,value.Occurrence.Description)
+
+		database.IncrValue(keyNoIndex + ":" + conf.ManagerOccurrence)
+
+		for _,i := range value.Occurrence.SolveOccurrences {
+			for z,j := range i.Activities {
+				database.HSetKey(key + ":" + conf.Occurrence + ":" + conf.Solve + ":" + conf.Activity,strconv.Itoa(z),j.Id)
+			}
+		}
+
+		for _,i := range value.Occurrence.SolveOccurrences {
+			for z,j := range i.Activities {
+				database.HSetKey(key + ":" + conf.Occurrence + ":" + conf.Solve + ":" + conf.Resource,strconv.Itoa(z),j.Id)
+			}
+		}
+	}
+}
+
+func GetOcurrences(gm GameModel) ([]UserOccurrence,[]ManagerOccurrence){
+	keyNoIndex := conf.GetGameOccurrenceKey(gm.Id,conf.Count)
+	countUser,_ := strconv.Atoi(database.GetKey(keyNoIndex + ":" + conf.UserOccurrence))
+	countManager,_ := strconv.Atoi(database.GetKey(keyNoIndex + ":" + conf.ManagerOccurrence))
+	var user []UserOccurrence
+	var manager []ManagerOccurrence
+
+	for k := 0; k <= countUser; k++ {
+		key := conf.GetGameOccurrenceKeyType(gm.Id,conf.UserOccurrence,strconv.Itoa(k))
+		var uo UserOccurrence
+		uo.Id = database.GetKey(key + ":" + conf.Identifier)
+		uo.Level, _ = strconv.Atoi(database.GetKey(key + ":" + conf.Level))
+
+
+		uo.Occurrence.Id = database.GetKey(key + ":" + conf.Occurrence + ":" + conf.Identifier)
+		uo.Occurrence.Description = database.GetKey(key + ":" + conf.Occurrence + ":" + conf.Description)
+
+		ac := database.HGetAllKey(key + ":" + conf.Occurrence + ":" + conf.Solve + ":" + conf.Activity)
+		rc := database.HGetAllKey(key + ":" + conf.Occurrence + ":" + conf.Solve + ":" + conf.Resource)
+		numberOfActivities := len(ac)
+		numberOfResources := len(rc)
+		var solves []SolveOccurrence
+		var as []Activity
+		var rs []Resource
+
+		for i := 0; i <= numberOfActivities; i++ {
+			var a Activity
+			a.Id = database.HGetKey(key + ":" + conf.Occurrence + ":" + conf.Solve + ":" + conf.Activity,strconv.Itoa(i))
+			as = append(as,a)
+		}
+
+		for i := 0; i <= numberOfResources; i++ {
+			var r Resource
+			r.Id = database.HGetKey(key + ":" + conf.Occurrence + ":" + conf.Solve + ":" + conf.Resource,strconv.Itoa(i))
+			rs = append(rs,r)
+		}
+
+		var solve SolveOccurrence
+		solve.Activities = as
+		solve.Resources = rs
+		solves = append(solves,solve)
+
+		uo.Occurrence.SolveOccurrences = solves
+
+		user = append(user,uo)
+	}
+
+	for k := 0; k <= countManager; k++ {
+		key := conf.GetGameOccurrenceKeyType(gm.Id,conf.ManagerOccurrence,strconv.Itoa(k))
+		var mo ManagerOccurrence
+
+		mo.Id = database.GetKey(key + ":" + conf.Identifier)
+
+		mo.Occurrence.Id = database.GetKey(key + ":" + conf.Occurrence + ":" + conf.Identifier)
+		mo.Occurrence.Description = database.GetKey(key + ":" + conf.Occurrence + ":" + conf.Description)
+
+		ac := database.HGetAllKey(key + ":" + conf.Occurrence + ":" + conf.Solve + ":" + conf.Activity)
+		rc := database.HGetAllKey(key + ":" + conf.Occurrence + ":" + conf.Solve + ":" + conf.Resource)
+		numberOfActivities := len(ac)
+		numberOfResources := len(rc)
+		var solves []SolveOccurrence
+		var as []Activity
+		var rs []Resource
+
+
+		for i := 0; i <= numberOfActivities; i++ {
+			var a Activity
+			a.Id = database.HGetKey(key + ":" + conf.Occurrence + ":" + conf.Solve + ":" + conf.Activity,strconv.Itoa(i))
+			as = append(as,a)
+		}
+
+		for i := 0; i <= numberOfResources; i++ {
+			var r Resource
+			r.Id = database.HGetKey(key + ":" + conf.Occurrence + ":" + conf.Solve + ":" + conf.Resource,strconv.Itoa(i))
+			rs = append(rs,r)
+		}
+
+		var solve SolveOccurrence
+		solve.Activities = as
+		solve.Resources = rs
+		solves = append(solves,solve)
+
+		mo.Occurrence.SolveOccurrences = solves
+
+		manager = append(manager,mo)
+	}
+
+	return user,manager
 }
 
 func GetLevels(id string) []Level {

@@ -32,6 +32,7 @@ const Occurrence = "oc"
 const OccurrenceId = "oi"
 const Description = "dc"
 const UserOccurrence = "uo"
+const ManagerOccurrence = "mo"
 const NumberOccurrences = "no"
 const CurrentWeek = "cw"
 const CurrentMoney = "cm"
@@ -56,6 +57,8 @@ const ResourcesIds = "rr"
 const ActivityIds = "aa"
 const Member = "mb"
 const Product = "pd"
+const Open = "O"
+const Close = "C"
 
 func GetKeyManager(userId,week int, managerId string) string {
 	return Game + ":" + Manager + ":" + strconv.Itoa(userId) + ":" + managerId + ":" + strconv.Itoa(week)
@@ -96,6 +99,10 @@ func GetResourceKey(id,field string,level,process int,unit string) string {
 
 func GetGameOccurrenceKey(id,field string) string {
 	return GetGameModelKey(id,Occurrence) + ":" + field
+}
+
+func GetGameOccurrenceKeyType(id,_type,field string) string {
+	return GetGameModelKey(id,Occurrence) + ":" + _type + ":" + field
 }
 
 func GetSolveKey(id,field string) string {

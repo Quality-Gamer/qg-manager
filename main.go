@@ -3,7 +3,6 @@ package main
 import (
 	//"github.com/Quality-Gamer/qg-manager/endpoint"
 	"github.com/labstack/echo"
-	"os"
 	"qg-manager/endpoint"
 )
 
@@ -56,9 +55,12 @@ func main() {
 	//Run/Game
 	e.POST("/api/run/game", endpoint.GoNext)
 
+	//Create/Occurrence
+	e.POST("/api/create/occurrences", endpoint.CreateOccurrences)
+
 	//Debug
 	e.POST("/api/debug", endpoint.Debug)
 	e.GET("/api/debug", endpoint.Debug)
 
-	e.Logger.Fatal(e.Start(":" + os.Getenv("PORT")))
+	e.Logger.Fatal(e.Start(":61506" ))
 }

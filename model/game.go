@@ -4,6 +4,7 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"math"
+	"math/rand"
 	"qg-manager/conf"
 	"qg-manager/database"
 	"strconv"
@@ -122,9 +123,32 @@ func FindManagerMatch(userId int, matchId string) (ManagerMatch,bool) {
 	match.Resources.Team, match.Resources.Products = GetMatchResources(userId,match.Level,matchId)
 	match.Activities = GetMatchActivities(userId,match.Level,matchId)
 
-	//Event          Event               `json:"event"`
-	//Occurrence     []ManagerOccurrence `json:"manager_occurrence"`
-	//UserOccurrence []UserOccurrence    `json:"user_occurrence"`
+	keyCountOc := conf.GetKeyOccurrence(match.UserId,match.Id) + ":" + conf.ManagerOccurrence
+	count,_ := strconv.Atoi(database.GetKey(keyCountOc + ":" + conf.Count))
+	var mo []ManagerOccurrence
+	var uo []UserOccurrence
+
+	for i := 0; i <= count; i++ {
+		var o ManagerOccurrence
+		o.Id = database.GetKey(keyCountOc + ":" + strconv.Itoa(i) + ":" + conf.Occurrence)
+		o.Status = database.GetKey(keyCountOc + ":" + strconv.Itoa(i) + ":" + conf.Status)
+		o.Occurrence.Id = o.Id
+		mo = append(mo,o)
+	}
+
+	keyCountOc2 := conf.GetKeyOccurrence(match.UserId,match.Id) + ":" + conf.UserOccurrence
+	count2,_ := strconv.Atoi(database.GetKey(keyCountOc2 + ":" + conf.Count))
+
+	for i := 0; i <= count2; i++ {
+		var o UserOccurrence
+		o.Id = database.GetKey(keyCountOc2 + ":" + strconv.Itoa(i) + ":" + conf.Occurrence)
+		o.Status = database.GetKey(keyCountOc2 + ":" + strconv.Itoa(i) + ":" + conf.Status)
+		o.Occurrence.Id = o.Id
+		uo = append(uo,o)
+	}
+
+	match.UserOccurrence = uo
+	match.Occurrence = mo
 
 	return match,exists
 }
@@ -332,10 +356,112 @@ func (mm *ManagerMatch) RunGame() bool {
 		}
 	}
 
+	generateManagerOccurrence(mm)
+	nextWeek(mm)
+
 	if solveProcess == nProcess {
 		mm.Level = mm.Level + 1
+		nextLevel(mm)
+		closeManagerOccurrences(mm)
 		return true
 	}
 
 	return false
+}
+
+func nextWeek(mm *ManagerMatch) {
+	keyNoWeek := conf.GetKeyOccurrence(mm.UserId,mm.Id)
+	keyCurrentWeek :=  keyNoWeek + ":" + conf.CurrentWeek
+	database.IncrValue(keyCurrentWeek)
+}
+
+func nextLevel(mm *ManagerMatch) {
+	keyNoWeek := conf.GetKeyOccurrence(mm.UserId,mm.Id)
+	keyCurrentLevel :=  keyNoWeek + ":" + conf.Level
+	database.IncrValue(keyCurrentLevel)
+}
+
+func closeManagerOccurrences (m *ManagerMatch) {
+	for index,i := range m.Occurrence {
+		r := i.Occurrence.SolveOccurrences[0].Resources
+		a := i.Occurrence.SolveOccurrences[0].Activities
+		totalR := 0
+		solveR := 0
+		totalA := 0
+		solveA := 0
+
+		for _,j := range r {
+			for _,k := range m.Resources.Team.Members {
+				if k.Id == j.Id {
+					solveR++
+				}
+			}
+
+			for _,k := range m.Resources.Products {
+				if k.Id == j.Id {
+					solveR++
+				}
+			}
+			totalR++
+		}
+
+		for _,j := range a {
+			for _,k := range m.Activities {
+				if k.Id == j.Id {
+					solveA++
+				}
+			}
+			totalA++
+		}
+
+		if (solveR + solveA) >= (totalR + totalA) {
+			solveOcc(m,i,index)
+		}
+
+	}
+
+}
+
+func solveOcc(m *ManagerMatch, i ManagerOccurrence, index int) {
+	key := conf.GetKeyOccurrence(m.UserId,m.Id)
+	database.SetKey(key + ":" + strconv.Itoa(index) + ":" + conf.Status,conf.Close)
+}
+
+func generateManagerOccurrence (m *ManagerMatch) {
+	if hasOccurrence(m.Level) {
+		key := conf.GetKeyOccurrence(m.UserId,m.Id) + ":" + conf.ManagerOccurrence
+		list := getOccurrenceList(m.GameModel.Id)
+		size := len(list) - 1
+		choosen := random(0,size)
+		count,_ := strconv.Atoi(database.GetKey(key + ":" + conf.Count))
+		database.IncrValue(key + ":" + conf.Count)
+		newCount := count + 1
+		database.SetKey(key + ":" + strconv.Itoa(newCount) + ":" + conf.Occurrence,list[choosen].Id)
+		database.SetKey(key + ":" + strconv.Itoa(newCount) + ":" + conf.Status,conf.Open)
+	}
+}
+
+func getOccurrenceList (modelId string) []ManagerOccurrence {
+	gm := GetModel(modelId)
+
+	return gm.ManagerOccurrences
+}
+
+func hasOccurrence(level int) bool{
+	if random(0,100) > (100 - getProbabilty(level) ) {
+		return true
+	} else {
+		return false
+	}
+}
+
+func getProbabilty(level int) int{
+	// 7 levels
+	//each level add 10%
+	return conf.OccurrenceProbability * level
+}
+
+func random(min,max int) int{
+	rand.Seed(time.Now().UnixNano())
+	return rand.Intn(max - min + 1) + min
 }
