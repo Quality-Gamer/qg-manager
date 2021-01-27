@@ -4,7 +4,7 @@ import (
 	//"github.com/Quality-Gamer/qg-manager/endpoint"
 	"github.com/labstack/echo"
 	"os"
-	"qg-manager/endpoint"
+	"github.com/Quality-Gamer/qg-manager/endpoint"
 )
 
 //var configuration = conf.Configuration{}
