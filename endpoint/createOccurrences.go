@@ -3,7 +3,7 @@ package endpoint
 import (
 	"encoding/json"
 	"github.com/labstack/echo"
-	"qg-manager/model"
+	"github.com/Quality-Gamer/qg-manager/model"
 )
 
 func CreateOccurrences(c echo.Context) (err error) {

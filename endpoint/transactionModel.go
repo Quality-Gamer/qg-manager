@@ -5,9 +5,9 @@ import (
 	"github.com/cheekybits/genny/generic"
 	"github.com/labstack/echo"
 	"net/http"
-	"qg-manager/conf"
-	"qg-manager/database"
-	"qg-manager/model"
+	"github.com/Quality-Gamer/qg-manager/conf"
+	"github.com/Quality-Gamer/qg-manager/database"
+	"github.com/Quality-Gamer/qg-manager/model"
 	"strconv"
 )
 

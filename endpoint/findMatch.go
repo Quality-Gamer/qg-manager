@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"github.com/labstack/echo"
 	"net/http"
-	"qg-manager/conf"
-	"qg-manager/model"
+	"github.com/Quality-Gamer/qg-manager/conf"
+	"github.com/Quality-Gamer/qg-manager/model"
 	"strconv"
 )
 

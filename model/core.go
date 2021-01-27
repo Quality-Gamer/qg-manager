@@ -2,8 +2,8 @@ package model
 
 import (
 	"math/rand"
-	"qg-manager/conf"
-	"qg-manager/database"
+	"github.com/Quality-Gamer/qg-manager/conf"
+	"github.com/Quality-Gamer/qg-manager/database"
 	"strconv"
 )
 
