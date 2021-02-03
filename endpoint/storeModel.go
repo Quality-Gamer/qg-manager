@@ -26,7 +26,7 @@ func StoreModel(c echo.Context) error {
 		user_id, _ := strconv.Atoi(c.FormValue("user_id"))
 		matchId := c.FormValue("match_id")
 		modelId := model.GetModelId(user_id,matchId)
-		mm := model.FindManagerMatch(user_id,matchId)
+		mm,_ := model.FindManagerMatch(user_id,matchId)
 
 		// level will replace week in order to deliver the first version as soon as possible
 		// the code has not been refactored
