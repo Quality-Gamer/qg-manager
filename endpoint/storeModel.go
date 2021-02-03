@@ -20,14 +20,19 @@ type normalizedResponse struct {
 func StoreModel(c echo.Context) error {
 	var res model.Response
 
-	if len(c.FormValue("user_id")) > 0 && len(c.FormValue("week")) > 0 && len(c.FormValue("match_id")) > 0 {
+	if len(c.FormValue("user_id")) > 0 && len(c.FormValue("match_id")) > 0 {
 		c.Response().Header().Set("Access-Control-Allow-Origin", "*")
 		c.Response().Header().Set(echo.HeaderContentType, echo.MIMEApplicationJSONCharsetUTF8)
-		week, _ := strconv.Atoi(c.FormValue("week"))
 		user_id, _ := strconv.Atoi(c.FormValue("user_id"))
 		matchId := c.FormValue("match_id")
 		modelId := model.GetModelId(user_id,matchId)
-		items := loadModelItems(modelId,matchId,user_id,week)
+		mm := model.FindManagerMatch(user_id,matchId)
+
+		// level will replace week in order to deliver the first version as soon as possible
+		// the code has not been refactored
+		level := mm.Level
+
+		items := loadModelItems(modelId,matchId,user_id,level)
 		res.Response = append(res.Response, items)
 		res.Message = conf.SuccessMessage
 		res.Status = conf.SuccessCode
