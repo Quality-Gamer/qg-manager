@@ -2,6 +2,7 @@ package endpoint
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/labstack/echo"
 	"net/http"
 	"github.com/Quality-Gamer/qg-manager/conf"
@@ -13,7 +14,8 @@ func StartGame(c echo.Context) error {
 	var res model.Response
 	c.Response().Header().Set("Access-Control-Allow-Origin","*")
 	c.Response().Header().Set(echo.HeaderContentType,echo.MIMEApplicationJSONCharsetUTF8)
-
+	fmt.Println(c.FormValue("user_id"))
+	fmt.Println(c.FormValue("model_id"))
 	if len(c.FormValue("user_id")) > 0 && len(c.FormValue("model_id")) > 0 {
 		uid, _ := strconv.Atoi(c.FormValue("user_id"))
 		modelId := c.FormValue("model_id")
