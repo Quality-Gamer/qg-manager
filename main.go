@@ -25,19 +25,19 @@ func main() {
 	e.POST("/api/create/model", endpoint.CreateGameModel)
 
 	//Create/Match
-	e.POST("/api/create/match", endpoint.StartGame)
+	e.GET("/api/create/match", endpoint.StartGame)
 
 	//Get/Store
 	e.GET("/api/get/store", endpoint.StoreModel)
 
 	//Create/Transaction
-	e.POST("/api/create/transaction", endpoint.TransactionModel)
+	e.GET("/api/create/transaction", endpoint.TransactionModel)
 
 	//Get/Match
 	e.GET("/api/get/match", endpoint.FindMatch)
 
 	//Run/Game
-	e.POST("/api/run/game", endpoint.GoNext)
+	e.GET("/api/run/game", endpoint.GoNext)
 
 	//Create/Occurrence
 	e.POST("/api/create/occurrences", endpoint.CreateOccurrences)
