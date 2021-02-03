@@ -22,6 +22,7 @@ type ManagerMatch struct {
 	UserId         int                 `json:"user_id"`
 	ProjectId      int                 `json:"-"`
 	Week           int                 `json:"week"`
+	Description    string			   `json:"description"`
 	Progress       float64             `json:"-"`
 	ProgressStatus string              `json:"-"`
 	Level          int                 `json:"level"`
@@ -114,6 +115,7 @@ func FindManagerMatch(userId int, matchId string) (ManagerMatch,bool) {
 	//GameModel is not returned in the response
 	match.GameModel = GetGameModel(database.GetKey(keyGameModelId))
 	if len(match.GameModel.Id) > 0 { exists = true }
+	match.Description = match.GameModel.Description
 
 	match.UserId = userId
 	match.Week,_ = strconv.Atoi(database.GetKey(keyCurrentWeek))
