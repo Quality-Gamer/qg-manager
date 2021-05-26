@@ -9,7 +9,6 @@ import (
 	"github.com/Quality-Gamer/qg-manager/database"
 	"github.com/Quality-Gamer/qg-manager/model"
 	"strconv"
-	"fmt"
 )
 
 type ResponseNext struct {
@@ -90,8 +89,7 @@ func goToNext(userId, week int, matchId string) (model.ManagerMatch, bool, bool,
 	newMatch, _ := model.FindManagerMatch(userId, matchId)
 
 	end := false
-	fmt.Println("goNext.NewMatch")
-	fmt.Println(newMatch)
+
 	if newMatch.Week >= 8 {
 		end = true
 	}
