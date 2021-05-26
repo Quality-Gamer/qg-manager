@@ -364,7 +364,7 @@ func (mm *ManagerMatch) RunGame() bool {
 	if solveProcess == nProcess {
 		mm.Level = mm.Level + 1
 		nextLevel(mm)
-		closeManagerOccurrences(mm)
+		//closeManagerOccurrences(mm)
 		return true
 	}
 
