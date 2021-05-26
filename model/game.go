@@ -353,7 +353,12 @@ func (mm *ManagerMatch) RunGame() bool {
 				}
 			}
 		}
-
+		
+		fmt.Println("game.scoreActivities ", scoreActivities)
+		fmt.Println("game.scoreResourcesProduct ", scoreResourcesProduct)
+		fmt.Println("game.scoreResourcesTeam ", scoreResourcesTeam)
+		fmt.Println("game.Total ", scoreActivities+scoreResourcesProduct+scoreResourcesTeam)
+		fmt.Println("value.Score ", value.Score)
 		if scoreActivities+scoreResourcesProduct+scoreResourcesTeam >= value.Score {
 			solveProcess += 1
 		}
