@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"fmt"
 )
 
 const TeamType = "T"
@@ -360,7 +361,9 @@ func (mm *ManagerMatch) RunGame() bool {
 
 	generateManagerOccurrence(mm)
 	nextWeek(mm)
-
+	
+	fmt.Println("game.solveProcess ", solveProcess)
+	fmt.Println("game.nProcess ", nProcess)
 	if solveProcess == nProcess {
 		mm.Level = mm.Level + 1
 		nextLevel(mm)
