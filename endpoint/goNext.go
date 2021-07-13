@@ -87,7 +87,15 @@ func goToNext(userId, week int, matchId string) (model.ManagerMatch, bool, bool,
 
 	success := m.RunGame()
 	newMatch, _ := model.FindManagerMatch(userId, matchId)
-
+	
+	newMatch.Money = newMatch.Money + newMatch.GameModel.InitialMoney
+	newMatch.Time = newMatch.Time + newMatch.GameModel.Time
+	keyNoWeek := conf.GetKeyOccurrence(m.UserId, m.Id)
+	keyCurrentMoney := keyNoWeek + ":" + conf.CurrentMoney
+	keyCurrentTime := keyNoWeek + ":" + conf.CurrentTime
+	database.SetKey(keyCurrentMoney, newMatch.Money)
+	database.SetKey(keyCurrentTime, newMatch.Time)
+	
 	end := false
 
 	if newMatch.Week >= 8 {
