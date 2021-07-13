@@ -89,7 +89,7 @@ func goToNext(userId, week int, matchId string) (model.ManagerMatch, bool, bool,
 	newMatch, _ := model.FindManagerMatch(userId, matchId)
 	
 	newMatch.Money = newMatch.Money + newMatch.GameModel.InitialMoney
-	newMatch.Time = newMatch.Time + newMatch.GameModel.Time
+	newMatch.Time = newMatch.Time + newMatch.GameModel.InitialTime
 	keyNoWeek := conf.GetKeyOccurrence(m.UserId, m.Id)
 	keyCurrentMoney := keyNoWeek + ":" + conf.CurrentMoney
 	keyCurrentTime := keyNoWeek + ":" + conf.CurrentTime
