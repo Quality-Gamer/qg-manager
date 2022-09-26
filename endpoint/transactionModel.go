@@ -8,7 +8,8 @@ import (
 	"github.com/Quality-Gamer/qg-manager/conf"
 	"github.com/Quality-Gamer/qg-manager/database"
 	"github.com/Quality-Gamer/qg-manager/model"
-	"strconv"
+	"strconv",
+	"fmt"	
 )
 
 func TransactionModel(c echo.Context) error {
@@ -51,7 +52,9 @@ func makeTransactionModel(userId, week int, modelId, matchId, item, _type string
 	_, _, itemPrice := getItem(userId, week, modelId, item, _type)
 	float64ItemPrice, _ := strconv.ParseFloat(itemPrice,64)
 	intItemPrice, _ := strconv.Atoi(itemPrice)
-
+	
+	fmt.println(itemPrice)
+	
 	if intItemPrice == 0 {
 		return false,getMessage(4)
 	}
