@@ -359,7 +359,7 @@ func (mm *ManagerMatch) RunGame() bool {
 		}
 	}
 
-	generateManagerOccurrence(mm)
+	//generateManagerOccurrence(mm)
 	nextWeek(mm)
 
 	if solveProcess == nProcess {
