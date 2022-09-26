@@ -8,7 +8,7 @@ import (
 	"github.com/Quality-Gamer/qg-manager/conf"
 	"github.com/Quality-Gamer/qg-manager/database"
 	"github.com/Quality-Gamer/qg-manager/model"
-	"strconv",
+	"strconv"
 	"fmt"	
 )
 
