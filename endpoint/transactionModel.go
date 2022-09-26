@@ -54,7 +54,7 @@ func makeTransactionModel(userId, week int, modelId, matchId, item, _type string
 	float64ItemPrice, _ := strconv.ParseFloat(itemPrice,64)
 	intItemPrice, _ := strconv.Atoi(itemPrice)
 	
-	fmt.println(itemPrice)
+	fmt.Println(itemPrice)
 	
 	if intItemPrice == 0 {
 		return false,getMessage(4)
