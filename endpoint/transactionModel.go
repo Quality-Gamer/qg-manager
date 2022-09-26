@@ -48,7 +48,7 @@ func TransactionModel(c echo.Context) error {
 }
 
 func makeTransactionModel(userId, week int, modelId, matchId, item, _type string) (bool, string) {
-	_, _, itemPrice := getItem(userId, week, modelId, item, _type)
+	_, _, itemPrice := getItem(userId, week, modelId, item, _type, matchId)
 	float64ItemPrice, _ := strconv.ParseFloat(itemPrice,64)
 	intItemPrice, _ := strconv.Atoi(itemPrice)
 	
@@ -87,7 +87,7 @@ func getMessage(messageType int) string {
 	return arrayMessage[messageType]
 }
 
-func getItem(userId,week int, modelId, item, _type string) (string,string,string) {
+func getItem(userId,week int, modelId, item, _type, matchId string) (string,string,string) {
 	var tp,price string
 
 	if _type == "A" {
@@ -98,7 +98,7 @@ func getItem(userId,week int, modelId, item, _type string) (string,string,string
 		price = conf.Price
 	}
 
-	lv := model.GetCurrentLevel(userId, week, modelId)
+	lv := model.GetCurrentLevel(userId, week, matchId)
 	
 	strLv := strconv.Itoa(lv)
 	gm := model.GetModel(modelId)
