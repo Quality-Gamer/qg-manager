@@ -238,7 +238,7 @@ func GetModelId(user_id int, matchId string) string {
 }
 
 func GetCurrentLevel(user_id, week int, matchId string) int {
-	keyNoWeek := conf.GetKeyOccurrence(userId, matchId)
+	keyNoWeek := conf.GetKeyOccurrence(user_id, matchId)
 	keyCurrentLevel := keyNoWeek + ":" + conf.Level
 	lv, _ := strconv.Atoi(database.GetKey(keyCurrentLevel))
 	return lv
