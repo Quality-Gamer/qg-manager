@@ -51,7 +51,7 @@ func loadModelItems(modelId,matchId string, userId,week int) []*normalizedRespon
 	_model := model.GetModel(modelId)
 	levels := _model.Levels
 	//index := week - 1
-	index := 1
+	index := model.GetCurrentLevel(userId,week,matchId)
 	p := levels[index].Process
 
 	for _, i := range p {
