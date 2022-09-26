@@ -9,8 +9,9 @@ import (
 	"github.com/Quality-Gamer/qg-manager/database"
 	"github.com/Quality-Gamer/qg-manager/model"
 	"strconv"
-	"fmt"	
 )
+
+import ("fmt")
 
 func TransactionModel(c echo.Context) error {
 	var res model.Response
