@@ -103,10 +103,13 @@ func getItem(userId,week int, modelId, item, _type string) (string,string,string
 	}
 
 	lv := model.GetCurrentLevel(userId, week, modelId)
+	fmt.Println("lv")
+	fmt.Println(lv)		
 	strLv := strconv.Itoa(lv)
 	gm := model.GetModel(modelId)
 	indexMax := len(gm.Levels)
-
+	fmt.Println("idxmax")
+	fmt.Println(indexMax)
 	for i := 0; i < indexMax; i++ {
 		key := conf.Game + ":" + conf.Manager + ":" + conf.Model + ":" + modelId + ":" + conf.Level + ":" + strLv + ":" + conf.Process + ":" + strconv.Itoa(i) + ":" + tp + ":" + item + ":"
 		keyName := key + conf.Name
@@ -116,7 +119,11 @@ func getItem(userId,week int, modelId, item, _type string) (string,string,string
 		nm := database.GetKey(keyName)
 		pc := database.GetKey(keyPrice)
 		id := database.GetKey(keyId)
-
+		
+		fmt.Println(nm)
+		fmt.Println(pc)
+		fmt.Println(id)
+		
 		intPc,_ := strconv.Atoi(pc)
 		if intPc > 0 {
 			return id,nm,pc
