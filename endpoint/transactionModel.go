@@ -11,8 +11,6 @@ import (
 	"strconv"
 )
 
-import ("fmt")
-
 func TransactionModel(c echo.Context) error {
 	var res model.Response
 	c.Response().Header().Set("Access-Control-Allow-Origin", "*")
@@ -53,8 +51,6 @@ func makeTransactionModel(userId, week int, modelId, matchId, item, _type string
 	_, _, itemPrice := getItem(userId, week, modelId, item, _type)
 	float64ItemPrice, _ := strconv.ParseFloat(itemPrice,64)
 	intItemPrice, _ := strconv.Atoi(itemPrice)
-	
-	fmt.Println(itemPrice)
 	
 	if intItemPrice == 0 {
 		return false,getMessage(4)
@@ -103,13 +99,11 @@ func getItem(userId,week int, modelId, item, _type string) (string,string,string
 	}
 
 	lv := model.GetCurrentLevel(userId, week, modelId)
-	fmt.Println("lv")
-	fmt.Println(lv)		
+	
 	strLv := strconv.Itoa(lv)
 	gm := model.GetModel(modelId)
 	indexMax := len(gm.Levels)
-	fmt.Println("idxmax")
-	fmt.Println(indexMax)
+	
 	for i := 0; i < indexMax; i++ {
 		key := conf.Game + ":" + conf.Manager + ":" + conf.Model + ":" + modelId + ":" + conf.Level + ":" + strLv + ":" + conf.Process + ":" + strconv.Itoa(i) + ":" + tp + ":" + item + ":"
 		keyName := key + conf.Name
@@ -119,10 +113,7 @@ func getItem(userId,week int, modelId, item, _type string) (string,string,string
 		nm := database.GetKey(keyName)
 		pc := database.GetKey(keyPrice)
 		id := database.GetKey(keyId)
-		
-		fmt.Println(nm)
-		fmt.Println(pc)
-		fmt.Println(id)
+	
 		
 		intPc,_ := strconv.Atoi(pc)
 		if intPc > 0 {
